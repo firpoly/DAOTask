@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 @Repository
 public class ConsumerOrderRepository {
 
-    private static NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 
-    public ConsumerOrderRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public ConsumerOrderRepository(DataSource dataSource) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
