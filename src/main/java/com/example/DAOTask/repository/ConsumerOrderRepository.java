@@ -15,30 +15,18 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
 public class ConsumerOrderRepository {
 
-    private static Connection connection;
     private static NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private static JdbcOperations jdbcTemplate;
-    private static String myScript;
-    private static DataSource dataSource;
 
-    @Autowired
+
     public ConsumerOrderRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.dataSource = dataSource;
-        this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
-
-    public void connectDB() throws SQLException {
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        String user = "postgres";
-        String passwd = "postgres";
-        connection = DriverManager.getConnection(url, user, passwd);
     }
 
     private static String read(String scriptFileName) {
@@ -51,9 +39,10 @@ public class ConsumerOrderRepository {
     }
 
     public String getProductName(String name) {
-        myScript = read("mysql.sql");
-        List<String> strLst = this.jdbcTemplate.query(myScript, (rs, rowNum) ->
-                rs.getString(1), name);
+        String myScript = read("mysql.sql");
+        List<String> strLst = this.namedParameterJdbcTemplate.query(myScript, Collections.singletonMap("name", name),
+                (rs, rowNum) ->
+                rs.getString(1));
         return strLst.toString();
     }
 }
